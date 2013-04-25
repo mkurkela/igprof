@@ -178,7 +178,8 @@ protect(void *address, bool writable, unsigned prologueSize)
 
   // If the function prologueSize is at the edge of
   // the page change protection also from next page.
-  if (((pagesize - ((unsigned)originalAddress - (unsigned)address))) <= prologueSize)
+  if (((pagesize - ((unsigned long)originalAddress - (unsigned long)address)))
+        <= prologueSize)
     pagesize += prologueSize;
 #if __APPLE__
   // (http://lists.apple.com/archives/Darwin-kernel/2005/Feb/msg00045.html)
