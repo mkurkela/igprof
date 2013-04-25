@@ -599,8 +599,15 @@ parse(const char *func, void *address, unsigned *patches)
     {
       n += 4, insns++;
     }
+    else if ((insns[0] & 0xffff0000) == 0xe52d0000) // push {reglist}
+    {
+      n += 4, insns++;
+    }
+    else if ((insns[0] & 0xffff0000) == 0xe49d0000) // pop {reglist}
+    {
+      n += 4, insns++;
+    }
     else if (  insns[0] == 0xe1812000   // orr r2, r1, r0
-            || insns[0] == 0xe52d7004   // push {7}
             || insns[0] == 0xe2504000   // subs r4, r0, #0
             || insns[0] == 0xe2403020)  // sub r3, r0, #0
     {
@@ -852,7 +859,8 @@ prepare(void *address,
       += (unsigned char *)old - (unsigned char *)start - delta;
   }
 #elif __arm__
-  // Patch position independent instruction to use PC + 12 location.
+  // Patch position independent instruction to use PC + 8 location. Where the
+  // content of the pointed location is copied.
   if (patches && *patches)
   {
     unsigned *insns = (unsigned *)address;
